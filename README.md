@@ -1,3 +1,4 @@
+# Like it? Give it a star! ⭐ | 好用点个星！⭐
 # RAG 企业知识库问答应用
 
 本项目是一个基于RAG（检索增强生成）架构的全栈问答应用，旨在通过与本地知识库（如PDF研报）的交互，为用户提供精准、可靠的答案。项目后端采用Python和FastAPI构建，前端则由React和Tailwind CSS驱动。
