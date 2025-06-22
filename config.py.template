@@ -1,0 +1,89 @@
+# -*- coding: utf-8 -*-
+"""
+项目配置文件 - 模板
+
+请按照以下步骤操作，让项目成功运行起来：
+
+步骤 1：复制文件
+将这个 `config.py.template` 文件复制一份，并重命名为 `config.py`。
+
+步骤 2：配置 API Key (推荐使用环境变量)
+打开新创建的 `config.py` 文件，您会看到它被配置为优先从环境变量中读取API Key。
+这是最安全、最推荐的方式。
+
+  - (推荐) 设置环境变量:
+    在您的操作系统中设置一个名为 DASHSCOPE_API_KEY 的环境变量，值为您的密钥。
+    - macOS/Linux: export DASHSCOPE_API_KEY="sk-..."
+    - Windows: set DASHSCOPE_API_KEY="sk-..."
+
+  - (备用) 硬编码在文件中:
+    如果您不想或无法设置环境变量，可以直接在 `config.py` 文件中修改：
+    将 `os.environ.get('DASHSCOPE_API_KEY', 'YOUR_API_KEY')`
+    替换为 `DASHSCOPE_API_KEY = "sk-..."`
+
+获取API Key地址: https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key
+"""
+import os
+
+# --- API密钥配置 ---
+# 优先从环境变量 `DASHSCOPE_API_KEY` 读取, 如果未设置, 则使用下面的默认值 'YOUR_API_KEY'
+DASHSCOPE_API_KEY = os.environ.get('DASHSCOPE_API_KEY', "YOUR_API_KEY")
+
+
+# --- 模型名称配置 ---
+# Embedding模型 (用于将文本转换为向量)
+# 支持的模型列表: https://help.aliyun.com/zh/dashscope/developer-reference/text-embedding-api-details
+EMBEDDING_MODEL_NAME = 'text-embedding-v2'
+
+# Rerank模型 (用于对检索结果进行重新排序，可选)
+# 支持的模型列表: https://help.aliyun.com/zh/dashscope/developer-reference/rerank-api
+RERANK_MODEL_NAME = 'gte-rerank-v2'
+
+# LLM文本生成模型 (用于根据上下文生成最终答案)
+# 支持的模型列表: https://help.aliyun.com/zh/dashscope/developer-reference/api-details
+# 'qwen-plus' 是效果最好的版本, 'qwen-turbo' 是速度最快的版本
+GENERATION_MODEL_NAME = 'qwen-plus'
+
+
+# --- Prompt模板配置 ---
+# 默认的简单模板
+# PROMPT_TEMPLATE = """
+# 请根据以下提供的上下文信息，简洁和专业地回答用户的问题。
+# 如果根据上下文信息无法回答问题，请说"根据当前提供的资料无法回答该问题"，不允许补充您自己的知识。
+
+# ---
+# 上下文信息：
+# {context}
+# ---
+# 用户问题:
+# {question}
+# """
+
+# 带有思考链（Chain of Thought）和JSON输出的模板
+PROMPT_TEMPLATE = """
+你是一个专业的AI投资顾问，你的任务是根据提供的上下文信息，以严谨、分步的推理过程来回答用户的问题。
+请严格按照以下JSON格式返回你的分析和答案，不要有任何额外的解释或说明文字。
+
+**上下文信息:**
+---
+{context}
+---
+
+**用户问题:**
+{question}
+
+**你的输出必须是严格的JSON格式，如下所示:**
+```json
+{{
+  "reasoning_steps": [
+    "第一步推理：分析问题的核心需求。",
+    "第二步推理：在上下文中定位与问题最相关的关键信息。",
+    "第三步推理：基于找到的信息进行逻辑推导。",
+    "第四步推理：总结推导过程，形成最终结论。"
+  ],
+  "reasoning_summary": "对整个推理过程的简要概括。",
+  "relevant_context": "直接引用上下文中最核心的一段或几段原文，作为答案的主要依据。请使用Markdown的引用格式。",
+  "final_answer": "根据以上分析得出的最终、直接的答案。"
+}}
+```
+""" 
