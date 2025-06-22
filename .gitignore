@@ -21,7 +21,7 @@ yarn-error.log*
 # Project Specific
 vector_store/
 data/processed/
-stock_data/answers.json
+qa_data/answers.json
 config.py
 
 # macOS

@@ -16,6 +16,7 @@
 - **Python**: 3.10+
 - **Node.js**: 18.18.0+
 - **通义千问API Key**: 您需要一个有效的阿里云Dashscope API密钥。
+- **minerU API Key**: 您需要一个有效的 minerU API 密钥用于PDF解析。
 
 ## 🚀 快速启动
 
@@ -56,8 +57,9 @@ pip install -r requirements.txt
 cp config.py.template config.py
 ```
 然后，打开 `config.py` 文件，完成以下配置：
-1.  **API密钥**: 将 `"YOUR_API_KEY"` 替换为您自己的真实阿里云Dashscope API密钥。
-2.  **模型选择 (可选)**: 您可以根据需求调整模型。
+1.  **通义千问API密钥**: 将 `"YOUR_API_KEY"` 替换为您自己的真实阿里云Dashscope API密钥。
+2.  **minerU API密钥**: 将 `"YOUR_MINERU_API_KEY"` 替换为您的真实minerU API密钥。这是PDF解析功能所必需的。
+3.  **模型选择 (可选)**: 您可以根据需求调整模型。
     *   `GENERATION_MODEL_NAME`: 用于生成最终答案的大语言模型，如 `'qwen-plus'` 或 `'qwen-turbo'`。
     *   `RERANK_MODEL_NAME`: 用于对检索结果进行精细排序的模型，如 `'gte-rerank-v2'`。如果生成模型不适合或不需要重排，此步骤会被智能跳过。
 

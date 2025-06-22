@@ -135,8 +135,8 @@ def run_batch_mode(qa_service: QAService):
     运行批量问答模式。
     """
     print("\n--- 启动批量问答模式 ---")
-    questions_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "stock_data", "questions.json")
-    answers_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "stock_data", "answers.json")
+    questions_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "qa_data", "questions.json")
+    answers_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "qa_data", "answers.json")
 
     try:
         with open(questions_path, 'r', encoding='utf-8') as f:
