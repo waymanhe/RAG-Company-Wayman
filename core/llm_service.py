@@ -16,6 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import dashscope
 from http import HTTPStatus
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
 from config import DASHSCOPE_API_KEY, RERANK_MODEL_NAME, EMBEDDING_MODEL_NAME, GENERATION_MODEL_NAME
 
 class QwenLLM:
@@ -57,6 +58,34 @@ class QwenLLM:
         except Exception as e:
             print(f"调用Embedding API时发生异常: {e}")
             return None
+
+    @retry(
+        wait=wait_exponential(min=1, max=10),  # 等待时间指数增长，1s到10s
+        stop=stop_after_attempt(3),  # 最多重试3次
+        retry=retry_if_exception_type(Exception)  # 任何Exception都重试
+    )
+    def get_text_embeddings_batch(self, texts: list[str]) -> list[list[float]] | None:
+        """
+        获取批量文本的embedding向量。增加了重试机制。
+
+        :param texts: 输入文本列表
+        :return: 文本的embedding向量列表，或在失败时返回None
+        """
+        try:
+            resp = dashscope.TextEmbedding.call(
+                model=EMBEDDING_MODEL_NAME,
+                input=texts
+            )
+            if resp.status_code == HTTPStatus.OK:
+                # 提取所有embedding向量
+                embeddings = [record['embedding'] for record in resp.output['embeddings']]
+                return embeddings
+            else:
+                print(f"通义千问Embedding API批量调用失败: {resp.code} - {resp.message}")
+                return None
+        except Exception as e:
+            print(f"调用Embedding API批量接口时发生异常: {e}")
+            raise  # 重新抛出异常以触发tenacity的重试
 
     def get_chat_completion(self, prompt: str, system_prompt: str = "You are a helpful assistant."):
         """

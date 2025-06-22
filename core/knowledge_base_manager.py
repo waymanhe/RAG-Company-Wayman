@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import shutil
+import time
 # 修正: 将项目根目录添加到 sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -23,10 +24,43 @@ class QwenTongyiEmbeddings(Embeddings):
         self.llm_service = llm_service
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        """处理一组文档的向量化"""
-        embeddings = [self.llm_service.get_text_embedding(text) for text in texts]
-        # 过滤掉可能失败的结果
-        return [emb for emb in embeddings if emb is not None]
+        """
+        处理一组文档的向量化。
+        采用分批处理以提高效率并避免API单次请求量超限。
+        增加了更健壮的重试和退避机制来应对网络不稳定。
+        """
+        all_embeddings = []
+        batch_size = 25  # 通义千问v2模型的batch size上限为25
+        max_retries_per_batch = 5 # 增加每个批次的重试次数
+        
+        for i in range(0, len(texts), batch_size):
+            batch_texts = texts[i:i + batch_size]
+            
+            for attempt in range(max_retries_per_batch):
+                try:
+                    # 调用新的批量处理方法
+                    batch_embeddings = self.llm_service.get_text_embeddings_batch(batch_texts)
+                    if batch_embeddings:
+                        all_embeddings.extend(batch_embeddings)
+                        # 成功处理，跳出重试循环
+                        print(f"成功处理批次 {i//batch_size + 1}/{len(texts)//batch_size + 1}。")
+                        break
+                    else:
+                        print(f"警告: 批次 {i//batch_size + 1} 的Embedding返回为空。")
+                        # 同样视为成功处理，跳出重试
+                        break
+                except Exception as e:
+                    # 捕获到异常，进行重试
+                    wait_time = 5 * (attempt + 1) # 指数退避
+                    print(f"错误: 处理批次 {i//batch_size + 1} (尝试 {attempt + 1}/{max_retries_per_batch}) 时发生错误: {e}")
+                    print(f"将在 {wait_time} 秒后重试...")
+                    if attempt + 1 == max_retries_per_batch:
+                        # 这是最后一次尝试，记录严重错误并抛出异常
+                        print(f"错误: 批次 {i//batch_size + 1} 在所有重试后仍然失败。程序将终止。")
+                        raise e # 重新抛出异常，终止整个建库流程
+                    time.sleep(wait_time)
+        
+        return all_embeddings
 
     def embed_query(self, text: str) -> List[float]:
         """处理单个查询的向量化"""
