@@ -187,7 +187,7 @@ def run_interactive_mode(qa_service: QAService):
 if __name__ == '__main__':
     # --- 模式选择 ---
     # "interactive": 手动交互式提问
-    # "batch": 自动处理 'stock_data/questions.json' 文件
+    # "batch": 自动处理 'qa_data/questions.json' 文件
     MODE = "batch" 
     # -----------------
 
