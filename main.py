@@ -21,8 +21,8 @@ from core.qa_service import QAService
 # --- 数据模型定义 ---
 class AskRequest(BaseModel):
     query: str
-    top_k: int = 5
-    rerank_top_n: int = 3
+    top_k: int = 20
+    rerank_top_n: int = 5
 
 # --- 应用生命周期管理 ---
 @asynccontextmanager

@@ -111,9 +111,16 @@ class QAService:
                 "raw_context": documents
             }
 
-    def ask(self, query: str, top_k: int = 5, rerank_top_n: int = 3) -> Dict:
+    def ask(self, query: str, top_k: int = 20, rerank_top_n: int = 5) -> Dict:
         """
         接收问题, 执行完整的RAG流程, 并返回结构化的答案。
+        
+        参数调整说明:
+        - top_k: 从5增加到20，旨在扩大初步召回范围，确保跨文档分析时，
+                 相关性较低但关键的文档（如另一份报告）也能被纳入考虑范围。
+        - rerank_top_n: 从3增加到5，在扩大召回的基础上，为Rerank模型提供
+                        更丰富的候选集，并最终为LLM提供更全面的上下文，
+                        以提升复杂问题的分析和生成质量。
         """
         print(f"\n--- 接收到问题: {query} ---")
         final_docs = self.search_documents(query, top_k, rerank_top_n)

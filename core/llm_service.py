@@ -29,13 +29,39 @@ class QwenLLM:
         else:
             raise ValueError("通义千问API Key未设置, 请在config.py中配置")
 
-    def get_rerank_documents(self, query: str, documents: list[str], top_n: int = 3):
+    def get_rerank_documents(self, query: str, documents: list[str], top_n: int = 3) -> list[str]:
         """
         使用通义千问的rerank API对文档列表进行重排。
+        现在将实际调用API，而不是禁用它。
         """
-        # --- 临时禁用Rerank功能，因为qwen-turbo不支持Rerank API ---
-        print("警告：Rerank功能已临时禁用，直接返回原始检索结果的前 N 个。")
-        return documents[:top_n]
+        if not documents:
+            return []
+            
+        try:
+            # 使用在config.py中定义的RERANK_MODEL_NAME
+            resp = dashscope.TextReRank.call(
+                model=RERANK_MODEL_NAME,
+                query=query,
+                documents=documents,
+                top_n=top_n
+            )
+            
+            # 调试日志：打印API原始返回
+            # print(f"--- Rerank API Response ---\n{resp}\n--------------------------")
+
+            if resp.status_code == HTTPStatus.OK:
+                # 最终解决方案：利用返回的index直接从原始documents列表中重构排序后的列表
+                reranked_indices = [item.index for item in resp.output.results]
+                reranked_docs = [documents[i] for i in reranked_indices]
+                return reranked_docs
+            else:
+                print(f"错误: 调用Rerank API失败: {resp.code} - {resp.message}")
+                # 在API失败时，返回原始文档的前 top_n 个作为备用
+                return documents[:top_n]
+        except Exception as e:
+            print(f"调用Rerank API时发生异常: {e}")
+            # 在发生异常时，也返回原始文档的前 top_n 个作为备用
+            return documents[:top_n]
 
     def get_text_embedding(self, text: str):
         """
