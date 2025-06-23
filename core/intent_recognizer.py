@@ -1,13 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author: hmd
-@license: (C) Copyright 2021-2027, JMD.
-@contact: 931725379@qq.com
-@software: 
-@file: intent_recognizer.py
-@time: 2024/7/29 10:00
-@desc: 封装意图识别逻辑，根据用户问题返回不同的Prompt模板
-"""
 import os
 import sys
 
