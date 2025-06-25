@@ -94,6 +94,8 @@ python main.py
 ```
 服务启动后，会监听 `http://localhost:8000`。您可以访问 `http://localhost:8000/docs` 查看自动生成的API文档。
 
+![启动后端服务成功预览](readmeImg/backendStart.png)
+
 ### 3. 前端启动
 
 打开 **一个新的终端**，执行以下命令：
@@ -110,9 +112,14 @@ npm run dev
 ```
 服务启动后，终端会显示一个本地网址，通常是 `http://localhost:5173`。
 
+![启动前端服务成功预览](readmeImg/frontendStart.png)
+
 ### 4. 访问应用
 
 在您的浏览器中打开前端服务的网址 (如 `http://localhost:5173`)，即可开始使用。
+
+![项目页面预览](readmeImg/frontendWorking.png)
+![回答问题时后端服务预览](readmeImg/backendWorking.png)
 
 ---
 
