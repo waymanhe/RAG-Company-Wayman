@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-@author: hmd
-@license: (C) Copyright 2021-2027, JMD.
-@contact: 931725379@qq.com
-@software: 
+@author: wayman
+@contact: 8236278419@qq.com
 @file: llm_service.py
-@time: 2024/7/28 17:05
 @desc: 封装与通义千问大模型相关的API调用
 """
 import os

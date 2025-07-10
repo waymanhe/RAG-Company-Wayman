@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-@author: hmd
-@license: (C) Copyright 2021-2027, JMD.
-@contact: 931725379@qq.com
-@software:
+@author: wayman
+@contact: 8236278419@qq.com
 @file: pdf_parser.py
-@time: 2024/7/28 17:30
 @desc: 使用 minerU API 解析PDF文件 (最终生产版本 - 使用 requests)
 """
 import os

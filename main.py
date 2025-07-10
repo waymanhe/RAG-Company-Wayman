@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-@author: hmd
-@license: (C) Copyright 2021-2027, JMD.
-@contact: 931725379@qq.com
-@software: 
+@author: wayman
+@contact: 8236278419@qq.com
 @file: main.py
-@time: 2024/7/29 11:00
 @desc: RAG应用的主入口，使用FastAPI提供Web服务
 """
 from fastapi import FastAPI
